@@ -35,8 +35,22 @@ class indeed:
             print (params['start'])
         self.jobDataFrame = pd.DataFrame(results).drop_duplicates('jobkey')
         self.jobDataFrame.to_csv("sample.csv",encoding='UTF-8')
-        return results
-    
+        return results    
+
+    def skillOR(self,l):
+        #print l
+        #print " AND ".join(l)
+        params = {
+            'q' : " OR ".join(l),
+            'l' : "phoenix",
+            'userip' : "1.2.3.4",
+            'useragent' : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2)",
+            'limit' : "50"
+        }
+        
+        search_response = self.client.search(**params)
+        return search_response['results']
+
     
     def similarJobs(self,job):
         sampledf = pd.read_csv("sample.csv",encoding='UTF-8')        
