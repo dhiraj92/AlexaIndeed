@@ -16,5 +16,19 @@ def skill(l):
     
     search_response = client.search(**params)
     return search_response['results']
+
+def skillOR(l):
+    #print l
+    #print " AND ".join(l)
+    params = {
+        'q' : " OR ".join(l),
+        'l' : "phoenix",
+        'userip' : "1.2.3.4",
+        'useragent' : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2)",
+        'limit' : "50"
+    }
+    
+    search_response = client.search(**params)
+    return search_response['results']
     
 #print skill(["Python","Java"])
