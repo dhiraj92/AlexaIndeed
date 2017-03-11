@@ -4,8 +4,8 @@ client = IndeedClient(8836246992678581)
 
 
 def skill(l):
-    print l
-    print " AND ".join(l)
+    #print l
+    #print " AND ".join(l)
     params = {
         'q' : " AND ".join(l),
         'l' : "phoenix",
@@ -17,4 +17,4 @@ def skill(l):
     search_response = client.search(**params)
     return search_response['results']
     
-print skill(["Python","Java"])
+#print skill(["Python","Java"])
