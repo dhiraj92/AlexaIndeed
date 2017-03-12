@@ -19,7 +19,7 @@ def homepage():
 
 @ask.launch
 def start_skill():
-    welcome_message = 'Hello welcome to olivia app. I perform job searches based on your skills, and also the good old keyword search. So then, go ahead , ask me!'
+    welcome_message = 'Hello!! Welcome to Smart Jobs app. I perform job searches based on your skills, and also the good old keyword search. What can I do for you?'
     return question(welcome_message).reprompt("I didnt get you. Give me a skill or keyword.")
     
 #==============================================================================================================
@@ -80,6 +80,8 @@ def getCategory(jobtype):
         res = ind.skillOR(session.attributes['skills'],session.attributes['city'],jobtype)
     else:
         res = ind.skill(session.attributes['skills'],session.attributes['city'],jobtype)
+    if (len(res) == 0):
+        return statement("Oops! Looks like our query was too strong for the internet. I will have to restart, sorry about that!")
     session.attributes['jobList'] = res[:5]
     statmentList = [(x['jobtitle'],x['company'],x['url']) for x in res]
     urlList = ""
@@ -132,5 +134,8 @@ def findSimilar(code):
     return statement(result + "  I've sent this data in a card to your Alexa app. All the best for your job search!") \
             .standard_card(title= session.attributes['jobtype'] + 'Jobs similar to Job ' + session.attributes['jobList'][code-1]['jobtitle'],text=urlList)
 #==============================================================================================================
+@ask.intent("AMAZON.StopIntent") 
+def stop():
+    return statement("Oh! Bye Bye!")
 if __name__ == '__main__':
     app.run(debug=True)

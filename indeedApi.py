@@ -32,6 +32,10 @@ class indeed:
         i = 25
         search_response = self.client.search(**params)
         results = []
+        if (len(search_response['results']) <= 0):
+            return results
+            
+        
         while(i<100 and i<search_response['totalResults']):        
             results += search_response['results']
             params['start'] += 25
@@ -39,6 +43,7 @@ class indeed:
             results += search_response['results']
             i+=25
             print (params['start'])
+        
         self.jobDataFrame = pd.DataFrame(results).drop_duplicates('jobkey')
         self.jobDataFrame.to_csv("sample.csv",encoding='UTF-8')
         return results    
@@ -46,6 +51,11 @@ class indeed:
     def skillOR(self,l,city,jobtype):
         #print l
         #print " AND ".join(l)
+        print (jobtype)
+        if jobtype in ['intern','internship','Internship']:
+            jobtype = 'internship'
+        else:
+            jobtype = 'fulltime'
         params = {
             'q' : " OR ".join(l),
             'l' : city,
@@ -54,9 +64,24 @@ class indeed:
             'useragent' : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2)",
             'limit' : "50"
         }
-        
+        i = 25
         search_response = self.client.search(**params)
-        return search_response['results']
+        results = []
+        if (len(search_response['results']) <= 0):
+            return results
+            
+        
+        while(i<100 and i<search_response['totalResults']):        
+            results += search_response['results']
+            params['start'] += 25
+            search_response = self.client.search(**params)
+            results += search_response['results']
+            i+=25
+            print (params['start'])
+        
+        self.jobDataFrame = pd.DataFrame(results).drop_duplicates('jobkey')
+        self.jobDataFrame.to_csv("sample.csv",encoding='UTF-8')
+        return results  
 
     
     def similarJobs(self,job):
@@ -102,34 +127,4 @@ class indeed:
         return simDict
         
 
-
-#ind = indeed()
-##code = int(code)
-##jobCode = session.attributes['jobList'][code-1]['jobkey']
-#simJobs = ind.similarJobs("dcd5ef328f6a2195")
-#
-#statmentList = [(x['jobtitle'],x['company'],x['url']) for x in simJobs]
-#urlList = ""
-#count =1
-#result = "Jobs similar to "
-#result =  " are " 
-#for job in statmentList:
-#    if count < 6:
-#        result = result +  str(count)+ " " +job[0].replace("&","and")  + ", at " + job[1].replace("&","and")  + ", "
-#        urlList = urlList + str(count)+ " " + job[0] + ", " + job[1] + " \n URL: " + job[2] + " \n "
-#        count+=1        
-#    
-
-#indeed = indeed() 
-##res = indeed.skill(["Python"])
-#sampledfo = pd.read_csv("sample.csv",encoding='UTF-8')
-#simList =  indeed.similarJobs("xyz")
-#simDict = []
-#for x in simList:
-#    s = sampledfo.loc[sampledfo['jobkey'] == x]
-#    simDict.append(s.to_dict())
-
-
-
-#df =  indeed.similarJobs("xyz")
 
