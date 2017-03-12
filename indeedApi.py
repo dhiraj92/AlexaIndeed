@@ -7,16 +7,21 @@ class indeed:
     #jobDataFrame 
     
     def __init__(self):
-        self.jobDataFrame= pd.DataFrame();
+#        self.jobDataFrame= pd.DataFrame();
         self.client = IndeedClient(8836246992678581);
         
     def skill(self,l,city,jobtype):
         #print l
         #print " AND ".join(l)
+        print (jobtype)
+        if jobtype in ['intern','internship','Internship']:
+            jobtype = 'internship'
+        else:
+            jobtype = 'fulltime'
         params = {
             'q' : " AND ".join(l),
-            'l' : "".join([city]),
-            'jt' : "".join([jobtype]),
+            'l' : city,
+            'jt' : jobtype,
             'userip' : "1.2.3.4",
             'useragent' : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2)",
             'limit' : "25",
@@ -43,8 +48,8 @@ class indeed:
         #print " AND ".join(l)
         params = {
             'q' : " OR ".join(l),
-            'l' : "".join([city]),
-            'jt' : "".join([jobtype]),
+            'l' : city,
+            'jt' : jobtype,
             'userip' : "1.2.3.4",
             'useragent' : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2)",
             'limit' : "50"
@@ -55,6 +60,7 @@ class indeed:
 
     
     def similarJobs(self,job):
+        print ("the job is" + job)
         sampledfo = pd.read_csv("sample.csv",encoding='UTF-8')
         sampledf = sampledfo.copy()
         del sampledf['stations']
@@ -69,7 +75,7 @@ class indeed:
         sampledf['indeedApply'] = [0 if x == 'false' else 1 for x in sampledf['indeedApply']]
         sampledf['expired'] = [0 if x == 'false' else 1 for x in sampledf['expired']]
         sampledf['sponsored'] = [0 if x == 'false' else 1 for x in sampledf['sponsored']]
-        jobNo = "e5c7b9cbf1a50268"
+        jobNo = job
         self.dataJob = sampledf.loc[sampledf['jobkey'] == jobNo]
         df= sampledf[sampledf["jobkey"] != jobNo]
 #        df[''] = ['red' if x == 'Z' else 'green' for x in df['Set']]
@@ -88,17 +94,40 @@ class indeed:
         
         result = df.sort(['variance'], ascending=False)
         #import pdb; pdb.set_trace()
-        return result['jobkey'][:10].tolist()
+        simList = result['jobkey'][:10].tolist()
+        simDict = []
+        for x in simList:
+            s = sampledfo.loc[sampledfo['jobkey'] == x]
+            simDict.append(s.to_dict(orient = 'records')[0])
+        return simDict
         
 
-indeed = indeed() 
-#res = indeed.skill(["Python"])
-sampledfo = pd.read_csv("sample.csv",encoding='UTF-8')
-simList =  indeed.similarJobs("xyz")
-simDict = []
-for x in simList:
-    s = sampledfo.loc[sampledfo['jobkey'] == x]
-    simDict.append(s.to_dict())
+
+#ind = indeed()
+##code = int(code)
+##jobCode = session.attributes['jobList'][code-1]['jobkey']
+#simJobs = ind.similarJobs("dcd5ef328f6a2195")
+#
+#statmentList = [(x['jobtitle'],x['company'],x['url']) for x in simJobs]
+#urlList = ""
+#count =1
+#result = "Jobs similar to "
+#result =  " are " 
+#for job in statmentList:
+#    if count < 6:
+#        result = result +  str(count)+ " " +job[0].replace("&","and")  + ", at " + job[1].replace("&","and")  + ", "
+#        urlList = urlList + str(count)+ " " + job[0] + ", " + job[1] + " \n URL: " + job[2] + " \n "
+#        count+=1        
+#    
+
+#indeed = indeed() 
+##res = indeed.skill(["Python"])
+#sampledfo = pd.read_csv("sample.csv",encoding='UTF-8')
+#simList =  indeed.similarJobs("xyz")
+#simDict = []
+#for x in simList:
+#    s = sampledfo.loc[sampledfo['jobkey'] == x]
+#    simDict.append(s.to_dict())
 
 
 

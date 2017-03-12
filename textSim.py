@@ -28,3 +28,4 @@ def cosine_sim(text1, text2):
     return ((tfidf * tfidf.T).A)[0,1]
 
 
+#print (cosine_sim("hi","hello"))
