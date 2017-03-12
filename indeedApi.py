@@ -10,12 +10,13 @@ class indeed:
         self.jobDataFrame= pd.DataFrame();
         self.client = IndeedClient(8836246992678581);
         
-    def skill(self,l):
+    def skill(self,l,city,jobtype):
         #print l
         #print " AND ".join(l)
         params = {
             'q' : " AND ".join(l),
-            'l' : "phoenix",
+            'l' : "".join([city]),
+            'jt' : "".join([jobtype]),
             'userip' : "1.2.3.4",
             'useragent' : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2)",
             'limit' : "25",
@@ -37,12 +38,13 @@ class indeed:
         self.jobDataFrame.to_csv("sample.csv",encoding='UTF-8')
         return results    
 
-    def skillOR(self,l):
+    def skillOR(self,l,city,jobtype):
         #print l
         #print " AND ".join(l)
         params = {
             'q' : " OR ".join(l),
-            'l' : "phoenix",
+            'l' : "".join([city]),
+            'jt' : "".join([jobtype]),
             'userip' : "1.2.3.4",
             'useragent' : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2)",
             'limit' : "50"
@@ -88,6 +90,7 @@ class indeed:
         #import pdb; pdb.set_trace()
         return result['jobkey'][:10].tolist()
         
+
 indeed = indeed() 
 #res = indeed.skill(["Python"])
 sampledfo = pd.read_csv("sample.csv",encoding='UTF-8')
@@ -96,4 +99,8 @@ simDict = []
 for x in simList:
     s = sampledfo.loc[sampledfo['jobkey'] == x]
     simDict.append(s.to_dict())
-#d = sampledfo.loc[sampledfo['jobkey'] == "e5c7b9cbf1a50268"]
+
+
+
+#df =  indeed.similarJobs("xyz")
+
