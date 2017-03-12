@@ -1,6 +1,6 @@
 from indeed import IndeedClient
 import pandas as pd
-
+import textSim
 
 class indeed:   
     
@@ -53,24 +53,47 @@ class indeed:
 
     
     def similarJobs(self,job):
-        sampledf = pd.read_csv("sample.csv",encoding='UTF-8')        
+        sampledfo = pd.read_csv("sample.csv",encoding='UTF-8')
+        sampledf = sampledfo.copy()
+        del sampledf['stations']
+        del sampledf['Unnamed: 0']
+        del sampledf['source']
+        del sampledf['onmousedown']
+        del sampledf['formattedLocation']
+        del sampledf['formattedLocationFull']
+        del sampledf['url']
+        del sampledf['date']
+        del sampledf['formattedRelativeTime']
+        sampledf['indeedApply'] = [0 if x == 'false' else 1 for x in sampledf['indeedApply']]
+        sampledf['expired'] = [0 if x == 'false' else 1 for x in sampledf['expired']]
+        sampledf['sponsored'] = [0 if x == 'false' else 1 for x in sampledf['sponsored']]
         jobNo = "e5c7b9cbf1a50268"
         self.dataJob = sampledf.loc[sampledf['jobkey'] == jobNo]
         df= sampledf[sampledf["jobkey"] != jobNo]
-        
-        df.ix[df.city == self.dataJob.city.iloc[0], ['city','country','formattedLocation','formattedLocationFull','state']] = 1
-        df.ix[df.city != 1, ['city','country','formattedLocation','formattedLocationFull','state']] = 0
-        df.ix[df.company == self.dataJob.city.iloc[0], ['company','country','formattedLocation','formattedLocationFull','state']] = 1
-        df.ix[df.city != 1, ['city','country','formattedLocation','formattedLocationFull','state']] = 0
+#        df[''] = ['red' if x == 'Z' else 'green' for x in df['Set']]
+        df.ix[df.city == self.dataJob.city.iloc[0], ['city','country','state']] = 1
+        df.ix[df.city != 1, ['city','country','state']] = 0
+        df.ix[df.company == self.dataJob.company.iloc[0], ['company']] = 1
+        df.ix[df.company != 1, ['company']] = 0
+    
 
-#        df['city'] = ['red' if x == 'Z' else 'green' for x in df['Set']]
-        del df['stations']
-        del df['Unnamed: 0']
-        import pdb; pdb.set_trace()
+#        df[''] = df.apply(my_test2, axis=1)
+
+        df['snippet'] = [textSim.cosine_sim(x,self.dataJob.snippet.iloc[0]) for x in df['snippet']]
+        df['jobtitle'] = [textSim.cosine_sim(x,self.dataJob.jobtitle.iloc[0]) for x in df['jobtitle']]
         
-        return sampledf
+        df['variance'] = df['city'] + df['company'] + df['country'] + df['expired'] + df['indeedApply']+ 10*df['snippet']+5*df['jobtitle']
+        
+        result = df.sort(['variance'], ascending=False)
+        #import pdb; pdb.set_trace()
+        return result['jobkey'][:10].tolist()
         
 indeed = indeed() 
 #res = indeed.skill(["Python"])
-
-df =  indeed.similarJobs("xyz")
+sampledfo = pd.read_csv("sample.csv",encoding='UTF-8')
+simList =  indeed.similarJobs("xyz")
+simDict = []
+for x in simList:
+    s = sampledfo.loc[sampledfo['jobkey'] == x]
+    simDict.append(s.to_dict())
+#d = sampledfo.loc[sampledfo['jobkey'] == "e5c7b9cbf1a50268"]

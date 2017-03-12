@@ -5,7 +5,8 @@ import requests
 import time
 import unidecode
 import indeedApi as indeed
-
+import logging
+logging.getLogger("flask_ask").setLevel(logging.DEBUG)
 app = Flask(__name__)
 ask = Ask(app, "/")
 
@@ -24,8 +25,8 @@ def share_headlines():
     #headlines = get_headlines()
     #headlines = "NOPE"
     #headline_msg = 'There is nothing implemented yet I have heard a lot of things are coming'.format(headlines)
-    #sessionAttr = session.attributes['resultset']
-    #print(sessionAttr)
+    sessionAttr = session.attributes['resultset']
+    print(sessionAttr)
     #result = [x['jobtitle'] for x in sessionAttr]
     return statement(result)
 
@@ -42,7 +43,7 @@ def skill_intent(s1,s2,s3,city):
             skillList.append(skill)
     res = indeed.skill(skillList)
     count = 1;
-    #session.attributes['resultset'] = res
+    session.attributes['resultset'] = res
     statmentList = [(x['jobtitle'],x['company'],x['url']) for x in res]
     
     if city is None:
