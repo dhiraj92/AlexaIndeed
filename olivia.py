@@ -105,7 +105,7 @@ def getCategory(jobtype):
             urlList = urlList + str(count)+ " " + job[0] + ", " + job[1] + " \n URL: " + job[2] + " \n "
             count+=1
     return question(result) \
-            .standard_card(title='Jobs for ' + " or ".join(session.attributes['skills']),
+            .standard_card(title='Jobs for ' + " , ".join(session.attributes['skills']),
                        text=urlList)
 
     
