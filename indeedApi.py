@@ -10,12 +10,13 @@ class indeed:
         self.jobDataFrame= pd.DataFrame();
         self.client = IndeedClient(8836246992678581);
         
-    def skill(self,l):
+    def skill(self,l,city,jobtype):
         #print l
         #print " AND ".join(l)
         params = {
             'q' : " AND ".join(l),
-            'l' : "phoenix",
+            'l' : "".join([city]),
+            'jt' : "".join([jobtype]),
             'userip' : "1.2.3.4",
             'useragent' : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2)",
             'limit' : "25",
@@ -37,12 +38,13 @@ class indeed:
         self.jobDataFrame.to_csv("sample.csv",encoding='UTF-8')
         return results    
 
-    def skillOR(self,l):
+    def skillOR(self,l,city,jobtype):
         #print l
         #print " AND ".join(l)
         params = {
             'q' : " OR ".join(l),
-            'l' : "phoenix",
+            'l' : "".join([city]),
+            'jt' : "".join([jobtype]),
             'userip' : "1.2.3.4",
             'useragent' : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2)",
             'limit' : "50"
@@ -70,7 +72,6 @@ class indeed:
         
         return sampledf
         
-indeed = indeed() 
-#res = indeed.skill(["Python"])
 
-df =  indeed.similarJobs("xyz")
+
+#df =  indeed.similarJobs("xyz")
